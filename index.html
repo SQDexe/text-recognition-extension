@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<title>Text Recognition</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+		<link rel="stylesheet" href="style.css">
+    <!-- <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script> -->
+    <script src="jquery.js" defer></script>
+		<script src="script.js" defer></script>
+	</head>
+
+  <body>
+
+    <div id="login" class="body-frame">
+      <div class="container">
+        <input id="l-login" class="input-text" type="text" placeholder="Login ..." minlength=6 maxlength=15>
+        <input id="l-password" class="input-text" type="password" placeholder="Password ..." minlength=9 maxlength=20 pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&_-])[A-Za-z\d@$!%*#?&_-]+$">
+        <button id="l-reset-password" class="buttton-resend">Reset password</button>
+        <button id="l-sign-in" class="button-action">Sign in</button>
+        <button id="l-sign-up" class="button-sign">Sign up</button>
+      </div>
+    </div>
+
+    <div id="signup" class="body-frame hidden">
+      <div class="container">
+        <input id="s-email" class="input-text" type="email" placeholder="E-mail ..." maxlength=40>
+        <input id="s-login" class="input-text" type="text" placeholder="Login ..." minlength=6 maxlength=15>
+        <input id="s-password" class="input-text" type="password" placeholder="Password ..." minlength=9 maxlength=20 pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&_-])[A-Za-z\d@$!%*#?&_-]+$">
+        <input id="s-password-repeat" class="input-text" type="password" placeholder="Repeat password ..." minlength=9 maxlength=20 pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&_-])[A-Za-z\d@$!%*#?&_-]+$">
+        <button id="s-sign-up" class="button-action">Sign up</button>
+        <button id="s-return" class="button-return">Return to login page</button>
+      </div>
+    </div>
+
+    <div id="signup-confirm" class="body-frame hidden">
+      <div class="container">
+        <input id="sc-token" class="input-text" type="text" placeholder="Verification token ...">
+        <button id="sc-resend" class="buttton-resend">Resend token</button>
+        <button id="sc-continue" class="button-action">Continue</button>
+        <button id="sc-return" class="button-return">Return to login page</button>
+      </div>
+    </div>
+
+    <div id="reset-email" class="body-frame hidden">
+      <div class="container">
+        <input id="re-email" class="input-text" type="email" placeholder="E-mail ..." maxlength=40>
+        <button id="re-send" class="button-action">Send token</button>
+        <button id="re-return" class="button-return">Return to login page</button>
+      </div>
+    </div>
+
+    <div id="reset-new" class="body-frame hidden">
+      <div class="container">
+        <input id="rn-token" class="input-text" type="text" placeholder="Verification token ...">
+        <button id="rn-resend">Resend token</button>
+        <input id="rn-password" class="input-text" type="password" placeholder="Password ..." minlength=9 maxlength=20 pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&_-])[A-Za-z\d@$!%*#?&_-]+$">
+        <input id="rn-password-repeat" class="input-text" type="password" placeholder="Repeat password ..." minlength=9 maxlength=20 pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&_-])[A-Za-z\d@$!%*#?&_-]+$">
+        <button id="rn-continue" class="button-action">Change password</button>
+        <button id="rn-return" class="button-return"></button>
+      </div>
+    </div>
+    
+    <div id="text-recognition" class="body-frame hidden">
+      <div class="container">
+        <button id="tr-copy">Copy from clipboard</button>
+        <button id="tr-send">Send</button>
+        <div id="tr-recognised">
+          <pre></pre>
+          <button id="tr-recognised-copy">Copy</button>
+        </div>
+        <div id="tr-translated">
+          <pre></pre>
+          <button id="tr-translated-copy">Copy</button>
+        </div>
+        <button id="tr-return" class="button-return"></button>
+      </div>
+    </div>
+
+    <!--
+    <h2 class="Image-text">Image to Text</h2>
+    <p class="hint-text">hint: press Shift + Windows + S <br>to make screenshot</p>
+    <button id="pasteButton" class="paste-button">Paste</button>
+    <div id="hidden1" class="checkbox">
+      <div class="checkmark"></div>
+    </div>
+    <div class="cross">
+      <div class="crossmark"></div>
+    </div>
+    <button id="copiedButton" class="copied-button">Copied</button>
+    -->
+  </body>
+
+</html>

@@ -1,0 +1,170 @@
+body {
+  background-color: #dddddd;
+  width: 200px;
+  height: 250px;
+  margin: 0;
+  padding: 0;
+  border-radius: 10px;
+  }
+.hidden {
+  display: none;
+  }
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  }
+.container > * {
+  align-self: center;
+  }
+.input-text {
+  display: block;
+  width: 150px;
+  height: 30px;
+  margin: 10px;
+  border-radius: 5px;
+  border-style: none;
+  }
+.button-return, .button-sign, .button-action, .buttton-resend {
+  display: block;
+  width: 150px;
+  height: 30px;
+  margin: 10px;
+  border-radius: 5px;
+  border-style: none;
+  }
+.button-return, .button-sign {
+  background-color: #bbbbbb;
+  color: #ffffff;
+  font-weight: bold;
+  }
+.button-action {
+  background-color: #ccffff;
+  color: #000000;
+  }
+.buttton-resend {
+  width: 120px;
+  height: 20px;
+  margin: 5px;
+  background-color: #ffcccc;
+  color: #000000;
+  }
+
+
+
+
+  .paste-button {
+    background-color: #5ABBBB;
+    border: 2px solid #302550;
+    color: white;
+    height: 30px;
+    width: 100px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 15px;
+    transition: box-shadow 0.15s;
+    vertical-align: top;
+    margin-top: -5px;
+    margin-left: 50px;
+    transition: background-color 0.15s, color 0.15s, box-shadow 0.15s;
+  }
+
+  .paste-button:hover {
+    background-color: white;
+    color: #5ABBBB;
+    box-shadow: 1px 1px 5px black;
+
+  }
+
+  .paste-button:active {
+    color: #3f8585;
+  }
+
+  .Image-text {
+    white-space: nowrap;
+    font-family: Arial, Helvetica, sans-serif;
+    margin-top: 30px;
+    margin-left: 45px;
+    margin-right: 45px;
+    color: white;
+    text-shadow: -1px -1px 0 black;
+  }
+
+  .hint-text {
+    color: #a399c2;
+    font-size: x-small;
+    text-align: center;
+    margin-top: 105px;
+  }
+
+  .checkbox {
+    display: none;
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: rgb(8, 155, 8);
+    border: 3px solid #fff;
+    margin-top: -145px;
+    margin-left: 70px;
+    box-shadow: -1px -1px 2px black;
+    animation: fadeIn 1s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  .checkmark {
+    position: absolute;
+    top: 45%;
+    left: 45%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 15px;
+    border-left: 3px solid #fff;
+    border-bottom: 3px solid #fff;
+    transform-origin: bottom left;
+    transform: rotate(-45deg);
+  }
+
+  .cross {
+    display: none;
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #ff0000;
+    border: 3px solid #fff;
+    margin-top: -145px;
+    margin-left: 70px;
+    box-shadow: -1px -1px 2px black;
+  }
+
+
+  .crossmark::before,
+  .crossmark::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 25%;
+    width: 30px;
+    height: 3px;
+    background-color: #fff;
+  }
+
+  .crossmark::before {
+    transform: rotate(-45deg);
+  }
+
+  .crossmark::after {
+    transform: rotate(45deg);
+  }

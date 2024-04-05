@@ -12,16 +12,20 @@ const urls =  Object.freeze({
   get login() { return `${this.api}/login`; },
   get signup() { return `${this.api}/signup`; },
   get confirm() { return `${this.api}/confirm`; },
-  get refresh() { return `${this.api}/refresh`; },
   get resendCode() { return `${this.api}/resendCode`; },
   get resetPassword() { return `${this.api}/resetPassword`; },
+  get refresh() { return `${this.api}/refresh`; },
   get recognize() { return `${this.api}/recognize`; }
   });
 
 const variables = Object.seal({
   reader: new FileReader(),
-  headerTemplate: new Headers({'Content-Type': 'application/json'}),
-  userEmail: null,
+  headerTemplate: {
+    'Content-Type': 'application/json'
+    // ,'Access-Control-Allow-Credentials': true
+    },
+  userEmailConfirm: null,
+  userEmailReset: null,
   accessToken: null,
   refreshToken: null
   });
@@ -29,6 +33,7 @@ const variables = Object.seal({
 const show = (element = null) => {
   $('.body-frame').addClass('hidden');
   element.removeClass('hidden');
+  $('.input-text').val('');
   }
 
 async function readImageFromClipboard() {
@@ -47,88 +52,110 @@ const saveToClipboard = element => {
   navigator.clipboard.writeText(element.text());
   }
 
-const login = () => {
-  let [login, password] = [
+const loginUser = () => {
+  const [login, password] = [
     elements.login.find('#l-login').val(),
     elements.login.find('#l-password').val()
     ];
+    
   
   $.ajax({
     url: urls.login,
-    type: 'post',
+    type: 'POST',
     dataType: 'json',
     headers: variables.headerTemplate,
     data: JSON.stringify({login, password})
     })
     .done((data, textStatus, jqXHR) => {
+      console.log(jqXHR);
       show(elements.textRecognition);
       })
-    .fail((jqXHR, textStatus, errorThrown) => console.error(jqXHR));
+    .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
   }
 
 const signup = () => {
-  let [email, login, password, repeat] = [
-    elements.login.find('#s-email').val(),
-    elements.login.find('#s-login').val(),
-    elements.login.find('#s-password').val(),
-    elements.login.find('#s-password-repeat').val()
+  const [email, login, password, repeat] = [
+    elements.signup.find('#s-email').val(),
+    elements.signup.find('#s-login').val(),
+    elements.signup.find('#s-password').val(),
+    elements.signup.find('#s-password-repeat').val()
     ];
   
   if (password === repeat)
     $.ajax({
       url: urls.signup,
-      type: 'post',
+      type: 'POST',
       dataType: 'json',
       headers: variables.headerTemplate,
       data: JSON.stringify({email, login, password})
       })
-      .done((data, textStatus, jqXHR) => {
-        variables.userEmail = email;
+      .done((data) => {
+        variables.userEmailConfirm = email;
         show(elements.signupConfirm);
         })
-      .fail((jqXHR, textStatus, errorThrown) => console.error(jqXHR));
+      .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
     else
       console.error('Passwords do not match');
   }
 
 const confirm = () => {
-  let [email, vcode] = [
-    variables.userEmail,
-    Number.parseInt(elements.login.find('#sc-token').val())
+  const [email, vcode] = [
+    variables.userEmailConfirm,
+    Number.parseInt(elements.signupConfirm.find('#sc-code').val())
     ];
 
   $.ajax({
     url: urls.confirm,
-    type: 'post',
+    type: 'POST',
     dataType: 'json',
     headers: variables.headerTemplate,
     data: JSON.stringify({email, vcode})
     })
-    .done((data, textStatus, jqXHR) => {
+    .done((data) => {
+      variables.userEmailConfirm = null;
       show(elements.login);
       })
-    .fail((jqXHR, textStatus, errorThrown) => console.error(jqXHR));
+    .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
+  }
+
+const resendCode = () => {
+  const email = elements.resetEmail.find('#re-email').val();
+
+  $.ajax({
+    url: urls.resendCode,
+    type: 'POST',
+    dataType: 'json',
+    headers: variables.headerTemplate,
+    data: JSON.stringify({email})
+    })
+    .done((data) => {
+      variables.userEmailReset = email;
+      show(elements.resetNew);
+      })
+    .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
   }
 
 const newPassword = () => {
-  let [email, vcode, password, repeat] = [
-    variables.userEmail,
-    Number.parseInt(elements.login.find('#rn-token').val()),
+  let [email, code, password, repeat] = [
+    variables.userEmailReset,
+    Number.parseInt(elements.resetNew.find('#rn-code').val()),
     elements.resetNew.find('#rn-password').val(),
     elements.resetNew.find('#rn-password-repeat').val()
     ];
+
   if (password === repeat)
     $.ajax({
       url: urls.resetPassword,
-      type: 'post',
+      type: 'POST',
       dataType: 'json',
       headers: variables.headerTemplate,
-      data: JSON.stringify({email, vcode})
+      data: JSON.stringify({email, code, password})
       })
-      .done((data, textStatus, jqXHR) => {
+      .done((data) => {
+        variables.userEmailReset = null;
         show(elements.login);
         })
-      .fail((jqXHR, textStatus, errorThrown) => console.error(jqXHR));
+      .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
     else
       console.error('Passwords do not match'); 
   }
@@ -142,24 +169,25 @@ const recognizeAndTranslate = () => {
 
   $.ajax({
     url: urls.recognize,
-    type: 'post',
+    type: 'POST',
     dataType: 'json',
     headers: variables.headerTemplate,
     data: JSON.stringify({accessToken, base64Data, targetLanguage})
     })
-    .done((data, textStatus, jqXHR) => {
+    .done((data) => {
       console.log(data);
       })
-    .fail((jqXHR, textStatus, errorThrown) => console.error(jqXHR));
+    .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
   }
 
 const load = () => {
   show(elements.login);
 
-  elements.login.find('#l-sign-in').on('click', login);
+  elements.login.find('#l-sign-in').on('click', loginUser);
   elements.signup.find('#s-sign-up').on('click', signup);
   elements.signupConfirm.find('#sc-continue').on('click', confirm);
-  elements.resetNew.find('#sc-continue').on('click', newPassword);
+  elements.resetEmail.find('#re-send').on('click', resendCode);
+  elements.resetNew.find('#rn-continue').on('click', newPassword);
   elements.textRecognition.find('#tr-send').on('click', recognizeAndTranslate);
 
   elements.textRecognition.find('#tr-recognised-copy').on('click', () => 
@@ -169,9 +197,9 @@ const load = () => {
     saveToClipboard(elements.textRecognition.find('#tr-translated pre').text())
     );
 
-  $('.button-return').on('click', () => { show(elements.login); });
-  elements.login.find('#l-sign-up').on('click', () => { show(elements.signup); });
-  elements.login.find('#l-reset-password').on('click', () => { show(elements.resetEmail); });
+  $('.button-return').on('click', () => show(elements.login));
+  elements.login.find('#l-sign-up').on('click', () => show(elements.signup));
+  elements.login.find('#l-reset-password').on('click', () => show(elements.resetEmail));
 
   }
 $(document).ready(load);

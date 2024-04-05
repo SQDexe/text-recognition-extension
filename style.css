@@ -50,6 +50,9 @@ body {
   background-color: #ffcccc;
   color: #000000;
   }
+:is(.button-return, .button-sign, .button-action, .buttton-resend):active {
+  filter: brightness(110%);
+  }
 
 
 

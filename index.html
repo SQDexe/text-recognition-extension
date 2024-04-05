@@ -16,7 +16,7 @@
     <div id="login" class="body-frame">
       <div class="container">
         <input id="l-login" class="input-text" type="text" placeholder="Login ..." minlength=6 maxlength=15>
-        <input id="l-password" class="input-text" type="password" placeholder="Password ..." minlength=9 maxlength=20 pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&_-])[A-Za-z\d@$!%*#?&_-]+$">
+        <input id="l-password" class="input-text" type="password" placeholder="Password ..." minlength=9 maxlength=20>
         <button id="l-reset-password" class="buttton-resend">Reset password</button>
         <button id="l-sign-in" class="button-action">Sign in</button>
         <button id="l-sign-up" class="button-sign">Sign up</button>
@@ -27,8 +27,8 @@
       <div class="container">
         <input id="s-email" class="input-text" type="email" placeholder="E-mail ..." maxlength=40>
         <input id="s-login" class="input-text" type="text" placeholder="Login ..." minlength=6 maxlength=15>
-        <input id="s-password" class="input-text" type="password" placeholder="Password ..." minlength=9 maxlength=20 pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&_-])[A-Za-z\d@$!%*#?&_-]+$">
-        <input id="s-password-repeat" class="input-text" type="password" placeholder="Repeat password ..." minlength=9 maxlength=20 pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&_-])[A-Za-z\d@$!%*#?&_-]+$">
+        <input id="s-password" class="input-text" type="password" placeholder="Password ..." minlength=9 maxlength=20>
+        <input id="s-password-repeat" class="input-text" type="password" placeholder="Repeat password ..." minlength=9 maxlength=20>
         <button id="s-sign-up" class="button-action">Sign up</button>
         <button id="s-return" class="button-return">Return to login page</button>
       </div>
@@ -36,8 +36,8 @@
 
     <div id="signup-confirm" class="body-frame hidden">
       <div class="container">
-        <input id="sc-token" class="input-text" type="text" placeholder="Verification token ...">
-        <button id="sc-resend" class="buttton-resend">Resend token</button>
+        <input id="sc-code" class="input-text" type="text" placeholder="Verification code ...">
+        <button id="sc-resend" class="buttton-resend">Resend code</button>
         <button id="sc-continue" class="button-action">Continue</button>
         <button id="sc-return" class="button-return">Return to login page</button>
       </div>
@@ -46,19 +46,19 @@
     <div id="reset-email" class="body-frame hidden">
       <div class="container">
         <input id="re-email" class="input-text" type="email" placeholder="E-mail ..." maxlength=40>
-        <button id="re-send" class="button-action">Send token</button>
+        <button id="re-send" class="button-action">Send code</button>
         <button id="re-return" class="button-return">Return to login page</button>
       </div>
     </div>
 
     <div id="reset-new" class="body-frame hidden">
       <div class="container">
-        <input id="rn-token" class="input-text" type="text" placeholder="Verification token ...">
-        <button id="rn-resend">Resend token</button>
-        <input id="rn-password" class="input-text" type="password" placeholder="Password ..." minlength=9 maxlength=20 pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&_-])[A-Za-z\d@$!%*#?&_-]+$">
-        <input id="rn-password-repeat" class="input-text" type="password" placeholder="Repeat password ..." minlength=9 maxlength=20 pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&_-])[A-Za-z\d@$!%*#?&_-]+$">
+        <input id="rn-code" class="input-text" type="text" placeholder="Verification code ...">
+        <button id="rn-resend" class="buttton-resend">Resend code</button>
+        <input id="rn-password" class="input-text" type="password" placeholder="Password ..." minlength=9 maxlength=20>
+        <input id="rn-password-repeat" class="input-text" type="password" placeholder="Repeat password ..." minlength=9 maxlength=20>
         <button id="rn-continue" class="button-action">Change password</button>
-        <button id="rn-return" class="button-return"></button>
+        <button id="rn-return" class="button-return">Return to login page</button>
       </div>
     </div>
     
@@ -74,7 +74,7 @@
           <pre></pre>
           <button id="tr-translated-copy">Copy</button>
         </div>
-        <button id="tr-return" class="button-return"></button>
+        <button id="tr-return" class="button-return">Logout</button>
       </div>
     </div>
 

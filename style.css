@@ -6,6 +6,9 @@ body {
   padding: 0;
   border-radius: 10px;
   }
+/* *:not(img, video, iframe) {
+  filter: invert(95%) hue-rotate(180deg);
+  } */
 .hidden {
   display: none;
   }

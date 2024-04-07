@@ -19,15 +19,20 @@ const urls =  Object.freeze({
   });
 
 const variables = Object.seal({
-  reader: new FileReader(),
-  headerTemplate: {
-    'Content-Type': 'application/json'
-    // ,'Access-Control-Allow-Credentials': true
+  template: {
+    methods: {
+      post: 'POST',
+      patch: 'PATCH'
+      },
+    header: {
+      'Content-Type': 'application/json'
+      },
+    dataType: 'json' 
     },
-  userEmailConfirm: null,
-  userEmailReset: null,
+  userEmail: null,
   accessToken: null,
-  refreshToken: null
+  refreshToken: null,
+  base64Data: null
   });
 
 const show = (element = null) => {
@@ -36,20 +41,30 @@ const show = (element = null) => {
   $('.input-text').val('');
   }
 
-async function readImageFromClipboard() {
+async function readFromClipboard() {
   try {
-    for (let item of await navigator.clipboard.read()) 
-      if (item.types.includes('image/png')) 
-        return await item.getType('image/png');
-    return null;
+    for (const item of await navigator.clipboard.read()) {
+      if (!item.types.includes('image/png'))
+        throw new Error('Clipboard does not contain PNG image data.');
+
+      const blob = await item.getType('image/png');
+
+      elements.textRecognition.find('#tr-preview').attr('src', URL.createObjectURL(blob));
+
+      const reader = new FileReader();
+      reader.addEventListener('loadend', () => {
+        variables.base64Data = reader.result.split(',')[1];
+        })
+      reader.readAsDataURL(blob);
+      }
     }
-  catch (err) {
-    console.error('Failed to read clipboard contents: ', err);
+  catch (error) {
+    console.error(error);
     }
   }
 
-const saveToClipboard = element => {
-  navigator.clipboard.writeText(element.text());
+const writeToClipboard = text => {
+  navigator.clipboard.writeText(text);
   }
 
 const loginUser = () => {
@@ -57,13 +72,12 @@ const loginUser = () => {
     elements.login.find('#l-login').val(),
     elements.login.find('#l-password').val()
     ];
-    
-  
+
   $.ajax({
     url: urls.login,
-    type: 'POST',
-    dataType: 'json',
-    headers: variables.headerTemplate,
+    type: variables.template.methods.post,
+    dataType: variables.template.dataType,
+    headers: variables.template.header,
     data: JSON.stringify({login, password})
     })
     .done((data, textStatus, jqXHR) => {
@@ -84,13 +98,13 @@ const signup = () => {
   if (password === repeat)
     $.ajax({
       url: urls.signup,
-      type: 'POST',
-      dataType: 'json',
-      headers: variables.headerTemplate,
+      type: variables.template.methods.post,
+      dataType: variables.template.dataType,
+      headers: variables.template.header,
       data: JSON.stringify({email, login, password})
       })
       .done((data) => {
-        variables.userEmailConfirm = email;
+        variables.userEmail = email;
         show(elements.signupConfirm);
         })
       .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
@@ -100,36 +114,36 @@ const signup = () => {
 
 const confirm = () => {
   const [email, vcode] = [
-    variables.userEmailConfirm,
+    variables.userEmail,
     Number.parseInt(elements.signupConfirm.find('#sc-code').val())
     ];
 
   $.ajax({
     url: urls.confirm,
-    type: 'POST',
-    dataType: 'json',
-    headers: variables.headerTemplate,
+    type: variables.template.methods.post,
+    dataType: variables.template.dataType,
+    headers: variables.template.header,
     data: JSON.stringify({email, vcode})
     })
     .done((data) => {
-      variables.userEmailConfirm = null;
+      variables.userEmail = null;
       show(elements.login);
       })
     .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
   }
 
 const resendCode = () => {
-  const email = elements.resetEmail.find('#re-email').val();
+  const email = variables.userEmail ?? elements.resetEmail.find('#re-email').val();
 
   $.ajax({
     url: urls.resendCode,
-    type: 'POST',
-    dataType: 'json',
-    headers: variables.headerTemplate,
+    type: variables.template.methods.post,
+    dataType: variables.template.dataType,
+    headers: variables.template.header,
     data: JSON.stringify({email})
     })
     .done((data) => {
-      variables.userEmailReset = email;
+      variables.userEmail = email;
       show(elements.resetNew);
       })
     .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
@@ -137,7 +151,7 @@ const resendCode = () => {
 
 const newPassword = () => {
   let [email, code, password, repeat] = [
-    variables.userEmailReset,
+    variables.userEmail,
     Number.parseInt(elements.resetNew.find('#rn-code').val()),
     elements.resetNew.find('#rn-password').val(),
     elements.resetNew.find('#rn-password-repeat').val()
@@ -146,13 +160,13 @@ const newPassword = () => {
   if (password === repeat)
     $.ajax({
       url: urls.resetPassword,
-      type: 'POST',
-      dataType: 'json',
-      headers: variables.headerTemplate,
+      type: variables.template.methods.post,
+      dataType: variables.template.dataType,
+      headers: variables.template.header,
       data: JSON.stringify({email, code, password})
       })
       .done((data) => {
-        variables.userEmailReset = null;
+        variables.userEmail = null;
         show(elements.login);
         })
       .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
@@ -161,17 +175,17 @@ const newPassword = () => {
   }
 
 const recognizeAndTranslate = () => {
-  let [accessToken, targetLanguage] = [
+  const [accessToken, base64Data, targetLanguage] = [
     variables.accessToken,
-    null /* brak !!!! */
+    variables.base64Data,
+    elements.textRecognition.find('#tr-languages').val()
     ];
-  let base64Data = null /* brak !!!!! */;
-
+  
   $.ajax({
     url: urls.recognize,
-    type: 'POST',
-    dataType: 'json',
-    headers: variables.headerTemplate,
+    type: variables.template.methods.post,
+    dataType: variables.template.dataType,
+    headers: variables.template.header,
     data: JSON.stringify({accessToken, base64Data, targetLanguage})
     })
     .done((data) => {
@@ -181,23 +195,29 @@ const recognizeAndTranslate = () => {
   }
 
 const load = () => {
-  show(elements.login);
+  show(elements.textRecognition);
 
   elements.login.find('#l-sign-in').on('click', loginUser);
   elements.signup.find('#s-sign-up').on('click', signup);
   elements.signupConfirm.find('#sc-continue').on('click', confirm);
+  elements.signupConfirm.find('#sc-resend').on('click', resendCode);
   elements.resetEmail.find('#re-send').on('click', resendCode);
+  elements.resetNew.find('#rn-resend').on('click', resendCode);
   elements.resetNew.find('#rn-continue').on('click', newPassword);
   elements.textRecognition.find('#tr-send').on('click', recognizeAndTranslate);
 
+  elements.textRecognition.find('#tr-copy').on('click', readFromClipboard);
   elements.textRecognition.find('#tr-recognised-copy').on('click', () => 
-    saveToClipboard(elements.textRecognition.find('#tr-recognised pre').text())
+    writeToClipboard(elements.textRecognition.find('#tr-recognised > pre').text())
     );
   elements.textRecognition.find('#tr-translated-copy').on('click', () => 
-    saveToClipboard(elements.textRecognition.find('#tr-translated pre').text())
+    writeToClipboard(elements.textRecognition.find('#tr-translated > pre').text())
     );
 
-  $('.button-return').on('click', () => show(elements.login));
+  $('.button-return').on('click', () => {
+    [variables.userEmail, variables.accessToken, variables.refreshToken, variables.base64Data] = Array.from({length: 4}).map(e => null);
+    show(elements.login);
+    });
   elements.login.find('#l-sign-up').on('click', () => show(elements.signup));
   elements.login.find('#l-reset-password').on('click', () => show(elements.resetEmail));
 

@@ -1,176 +1,135 @@
-body {
-  background-color: #dddddd;
-  width: 200px;
-  height: 250px;
-  margin: 0;
-  padding: 0;
-  border-radius: 10px;
-  }
-/* *:not(img, video, iframe) {
+/* Site managment */
+.dark-mode {
+  /* *:not(img, video, iframe, head, head *) */
   filter: invert(95%) hue-rotate(180deg);
-  } */
+  }
 .hidden {
   display: none;
   }
+.blank {
+  display: block;
+  width: 150px;
+  height: 15px;
+  }
+.centred-box {
+  width: 225px;
+  }
+.centred-box {
+  text-align: center;
+  }
+
+/* Main elements */
+body {
+  background-color: #cccccc;
+  width: 250px;
+  height: 350px;
+  margin: 0;
+  padding: 0;
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
+  }
+:is(button, label) {
+  user-select: none;
+  }
+
+/* Body wrapers */
+.top-frame {
+  width: 250px;
+  height: 50px;
+  }
+.body-frame {
+  width: 250px;
+  height: 300px;
+  }
+
+/* Postioning elements */
 .container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  align-content: center;
+  justify-content: space-around;
+  align-items: center;
   }
-.container > * {
-  align-self: center;
+.container-right {
+  width: 100%;
+  height: 100%;
+  justify-content: flex-end;
   }
+
+/* Basic element's settings */
 .input-text {
   display: block;
   width: 150px;
   height: 30px;
-  margin: 10px;
+  margin: 5px;
   border-radius: 5px;
   border-style: none;
   }
-.button-return, .button-sign, .button-action, .buttton-resend {
+.input-checkbox {
+  filter: grayscale(100%);
+  }
+.image-preview {
+  width: 150px;
+  height: 75px;
+  }
+.label-input-checkbox {
+  display: inline-block;
+  font-size: small;
+  }
+
+/* Buttons' settings */
+.button-return, .button-sign, .button-action, .buttton-resend, .button-copy {
   display: block;
   width: 150px;
   height: 30px;
   margin: 10px;
-  border-radius: 5px;
+  border-radius: 10px;
   border-style: none;
-  }
-.button-return, .button-sign {
-  background-color: #bbbbbb;
-  color: #ffffff;
-  font-weight: bold;
-  }
-.button-action {
-  background-color: #ccffff;
   color: #000000;
+  background-color: #dddddd;
+  font-size: small;
+  font-weight: bold;
+  &:hover {
+    color: #ffffff;
+    }
   }
 .buttton-resend {
   width: 120px;
   height: 20px;
   margin: 5px;
-  background-color: #ffcccc;
-  color: #000000;
+  border-radius: 5px;
+  color: #ff7777;
+  font-size: x-small;
   }
-:is(.button-return, .button-sign, .button-action, .buttton-resend):active {
+.button-copy {
+  width: 150px;
+  height: 20px;
+  margin: 5px;
+  border-radius: 5px;
+  font-size: smaller;
+  }
+:is(.button-return, .button-sign):hover {
+  background: #585858;
+  background: -moz-linear-gradient(45deg, #585858 0%, #929292 100%);
+  background: -webkit-linear-gradient(45deg, #585858 0%, #929292 100%);
+  background: linear-gradient(45deg, #585858 0%, #929292 100%);
+  }
+.button-action:hover {
+  background: #7CE2EC;
+  background: -moz-linear-gradient(left, #7CE2EC 0%, #3690BB 50%, #57A3E1 100%);
+  background: -webkit-linear-gradient(left, #7CE2EC 0%, #3690BB 50%, #57A3E1 100%);
+  background: linear-gradient(to right, #7CE2EC 0%, #3690BB 50%, #57A3E1 100%);
+  }
+.buttton-resend:hover {
+  background: #EC4C35;
+  background: -moz-linear-gradient(left, #EC4C35 0%, #9D0A0A 50%, #D76257 100%);
+  background: -webkit-linear-gradient(left, #EC4C35 0%, #9D0A0A 50%, #D76257 100%);
+  background: linear-gradient(to right, #EC4C35 0%, #9D0A0A 50%, #D76257 100%);
+  }
+.button-copy:hover {
+  background: #DDDD1D;
+  background: -moz-linear-gradient(45deg, #DDDD1D 0%, #98892D 100%);
+  background: -webkit-linear-gradient(45deg, #DDDD1D 0%, #98892D 100%);
+  background: linear-gradient(45deg, #DDDD1D 0%, #98892D 100%);
+  }
+:is(.button-return, .button-sign, .button-action, .buttton-resend, .button-copy):active {
   filter: brightness(110%);
-  }
-
-
-
-
-  .paste-button {
-    background-color: #5ABBBB;
-    border: 2px solid #302550;
-    color: white;
-    height: 30px;
-    width: 100px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 15px;
-    transition: box-shadow 0.15s;
-    vertical-align: top;
-    margin-top: -5px;
-    margin-left: 50px;
-    transition: background-color 0.15s, color 0.15s, box-shadow 0.15s;
-  }
-
-  .paste-button:hover {
-    background-color: white;
-    color: #5ABBBB;
-    box-shadow: 1px 1px 5px black;
-
-  }
-
-  .paste-button:active {
-    color: #3f8585;
-  }
-
-  .Image-text {
-    white-space: nowrap;
-    font-family: Arial, Helvetica, sans-serif;
-    margin-top: 30px;
-    margin-left: 45px;
-    margin-right: 45px;
-    color: white;
-    text-shadow: -1px -1px 0 black;
-  }
-
-  .hint-text {
-    color: #a399c2;
-    font-size: x-small;
-    text-align: center;
-    margin-top: 105px;
-  }
-
-  .checkbox {
-    display: none;
-    position: relative;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background-color: rgb(8, 155, 8);
-    border: 3px solid #fff;
-    margin-top: -145px;
-    margin-left: 70px;
-    box-shadow: -1px -1px 2px black;
-    animation: fadeIn 1s ease-out;
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-
-    to {
-      opacity: 1;
-    }
-  }
-
-  .checkmark {
-    position: absolute;
-    top: 45%;
-    left: 45%;
-    transform: translate(-50%, -50%);
-    width: 30px;
-    height: 15px;
-    border-left: 3px solid #fff;
-    border-bottom: 3px solid #fff;
-    transform-origin: bottom left;
-    transform: rotate(-45deg);
-  }
-
-  .cross {
-    display: none;
-    position: relative;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background-color: #ff0000;
-    border: 3px solid #fff;
-    margin-top: -145px;
-    margin-left: 70px;
-    box-shadow: -1px -1px 2px black;
-  }
-
-
-  .crossmark::before,
-  .crossmark::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 25%;
-    width: 30px;
-    height: 3px;
-    background-color: #fff;
-  }
-
-  .crossmark::before {
-    transform: rotate(-45deg);
-  }
-
-  .crossmark::after {
-    transform: rotate(45deg);
   }

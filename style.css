@@ -76,7 +76,7 @@ body {
   }
 
 /* Buttons' settings */
-.button-return, .button-sign, .button-action, .buttton-resend, .button-copy {
+.button-return, .button-sign, .button-logout, .button-action, .buttton-resend, .button-copy {
   display: block;
   width: 150px;
   height: 30px;
@@ -100,13 +100,13 @@ body {
   font-size: x-small;
   }
 .button-copy {
-  width: 150px;
+  width: 140px;
   height: 20px;
   margin: 5px;
-  border-radius: 5px;
-  font-size: smaller;
+  border-radius: 10px;
+  font-size: x-small;
   }
-:is(.button-return, .button-sign):hover {
+:is(.button-return, .button-sign, .button-logout):hover {
   background: #585858;
   background: -moz-linear-gradient(45deg, #585858 0%, #929292 100%);
   background: -webkit-linear-gradient(45deg, #585858 0%, #929292 100%);
@@ -130,6 +130,6 @@ body {
   background: -webkit-linear-gradient(45deg, #DDDD1D 0%, #98892D 100%);
   background: linear-gradient(45deg, #DDDD1D 0%, #98892D 100%);
   }
-:is(.button-return, .button-sign, .button-action, .buttton-resend, .button-copy):active {
+:is(.button-return, .button-sign, .button-logout, .button-action, .buttton-resend, .button-copy):active {
   filter: brightness(110%);
   }

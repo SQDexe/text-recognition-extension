@@ -1,18 +1,23 @@
+'use strict';
+
 const elements = Object.freeze({
   /* Backstage elemetns */
   settings: $('#settings-panel'),
   darkModeCheckbutton: $('#checkbox-dark-mode'),
   darkModers: $('*:not(img, video, iframe, head, head *)'),
-  panels: $('.body-frame'),
+  bodyPanels: $('.body-frame'),
   returnButtons: $('.button-return'),
-  inputs: $('.input-text'),
+  textInputs: $('.input-text:not(#settings-panel .input-text)'),
+  checkInputs: $('.input-checkbox:not(#settings-panel .input-checkbox)'),
   /* Main panels */
-  login: $('#login'),
-  signup: $('#signup'),
-  signupConfirm: $('#signup-confirm'),
-  resetEmail: $('#reset-email'),
-  resetNew: $('#reset-new'),
-  textRecognition: $('#text-recognition')
+  panels: {
+    login: $('#login'),
+    signup: $('#signup'),
+    signupConfirm: $('#signup-confirm'),
+    resetEmail: $('#reset-email'),
+    resetNew: $('#reset-new'),
+    textRecognition: $('#text-recognition')
+    }
   });
 
 /* API's urls */
@@ -55,21 +60,24 @@ const variables = Object.seal({
 /* Utlility functions */
 const checkNullOrUndefined = (...args) => args.some(param => Object.is(param, null) || Object.is(param, undefined));
 
-const show = (element = null) => {
-  elements.panels.addClass('hidden');
+function show(element = null) {
+  elements.bodyPanels.addClass('hidden');
+  elements.textInputs.val('');
+  elements.checkInputs.prop('checked', false);
   element.removeClass('hidden');
-  elements.inputs.val('');
   }
 
-const logout = () => {
+function logout() {
   localStorage.clear();
   [variables.userEmail, variables.tokens.access, variables.tokens.refresh, variables.base64Data] = Array.from({length: 4}).map(e => null);
   [variables.texts.recognised, variables.texts.translated] = Array.from({length: 2}).map(e => '');
   }
 
-const setColourScheme = () => elements.darkModeCheckbutton.is(':checked') ?
-  elements.darkModers.addClass('dark-mode') :
-  elements.darkModers.removeClass('dark-mode');
+function setColourScheme() {
+  elements.darkModeCheckbutton.is(':checked') ?
+    elements.darkModers.addClass('dark-mode') :
+    elements.darkModers.removeClass('dark-mode');
+  }
 
 async function readFromClipboard() {
   try {
@@ -79,7 +87,7 @@ async function readFromClipboard() {
 
       const blob = await item.getType('image/png');
 
-      elements.textRecognition.find('#tr-preview').attr('src', URL.createObjectURL(blob));
+      elements.panels.textRecognition.find('#tr-preview').attr('src', URL.createObjectURL(blob));
 
       const reader = new FileReader();
       reader.addEventListener('loadend', () => {
@@ -93,154 +101,150 @@ async function readFromClipboard() {
     }
   }
 
-const writeToClipboard = text => {
+function writeToClipboard(text) {
   navigator.clipboard.writeText(text);
   }
 /* ----- */
 
 /* Requests */
-const loginRequest = () => {
-  const [login, password, persist] = [
-    elements.login.find('#l-login').val(),
-    elements.login.find('#l-password').val(),
-    elements.login.find('#l-remember').prop('checked')
-    ];
-
-  $.ajax({
-    url: urls.login,
-    data: JSON.stringify({login, password})
-    })
-    .done((data) => {
-      [variables.tokens.access, variables.tokens.refresh] = [data['access_token'], data['refresh_token']];
-      if (persist) {
-        localStorage.setItem('access_token', variables.tokens.access);
-        localStorage.setItem('refresh_token', variables.tokens.refresh);
-        }
-      
-      show(elements.textRecognition);
-      })
-    .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
-  }
-
-const signupRequest = () => {
-  const [email, login, password, repeat] = [
-    elements.signup.find('#s-email').val(),
-    elements.signup.find('#s-login').val(),
-    elements.signup.find('#s-password').val(),
-    elements.signup.find('#s-password-repeat').val()
-    ];
+const requests = Object.freeze({
+  login: function() {
+    const [login, password, persist] = [
+      elements.panels.login.find('#l-login').val(),
+      elements.panels.login.find('#l-password').val(),
+      elements.panels.login.find('#l-remember').prop('checked')
+      ];
   
-  if (password === repeat)
     $.ajax({
-      url: urls.signup,
-      data: JSON.stringify({email, login, password})
+      url: urls.login,
+      data: JSON.stringify({login, password})
       })
       .done((data) => {
-        variables.userEmail = email;
-        show(elements.signupConfirm);
+        [variables.tokens.access, variables.tokens.refresh] = [data['access_token'], data['refresh_token']];
+        if (persist) {
+          localStorage.setItem('access_token', variables.tokens.access);
+          localStorage.setItem('refresh_token', variables.tokens.refresh);
+          }
+        
+        show(elements.panels.textRecognition);
         })
       .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
-    else
-      console.error('Passwords do not match');
-  }
-
-const confirmRequest = () => {
-  const [email, verification_code] = [
-    variables.userEmail,
-    Number.parseInt(elements.signupConfirm.find('#sc-code').val())
-    ];
-
-  $.ajax({
-    url: urls.confirm,
-    data: JSON.stringify({email, verification_code})
-    })
-    .done((data) => {
-      variables.userEmail = null;
-      show(elements.login);
-      })
-    .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
-  }
-
-const resendCodeRequest = () => {
-  const email = variables.userEmail ?? elements.resetEmail.find('#re-email').val();
-
-  $.ajax({
-    url: urls.resendCode,
-    data: JSON.stringify({email})
-    })
-    .done((data) => {
-      variables.userEmail = email;
-      show(elements.resetNew);
-      })
-    .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
-  }
-
-const newPasswordRequest = () => {
-  const [email, code, password, repeat] = [
-    variables.userEmail,
-    Number.parseInt(elements.resetNew.find('#rn-code').val()),
-    elements.resetNew.find('#rn-password').val(),
-    elements.resetNew.find('#rn-password-repeat').val()
-    ];
-
-  if (password === repeat)
+    },
+  signup: function() {
+    const [email, login, password, repeat] = [
+      elements.panels.signup.find('#s-email').val(),
+      elements.panels.signup.find('#s-login').val(),
+      elements.panels.signup.find('#s-password').val(),
+      elements.panels.signup.find('#s-password-repeat').val()
+      ];
+    
+    if (password === repeat)
+      $.ajax({
+        url: urls.signup,
+        data: JSON.stringify({email, login, password})
+        })
+        .done((data) => {
+          variables.userEmail = email;
+          show(elements.panels.signupConfirm);
+          })
+        .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
+      else
+        console.error('Passwords do not match');
+    },
+  confirm: function() {
+    const [email, verification_code] = [
+      variables.userEmail,
+      Number.parseInt(elements.panels.signupConfirm.find('#sc-code').val())
+      ];
+  
     $.ajax({
-      url: urls.resetPassword,
-      data: JSON.stringify({email, code, password})
+      url: urls.confirm,
+      data: JSON.stringify({email, verification_code})
       })
       .done((data) => {
         variables.userEmail = null;
-        show(elements.login);
+        show(elements.panels.login);
         })
       .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
-    else
-      console.error('Passwords do not match'); 
-  }
-
-const refreshRequest = () => {
-  const [access_token, refresh_token] = [
-    variables.tokens.access,
-    variables.tokens.refresh
-    ];
-
-  let successful = false;
-
-  $.ajax({
-    url: urls.refresh,
-    data: JSON.stringify({access_token, refresh_token})
-    })
-    .done((data) => {
-      successful = true;
-      })
-    .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
-
-  return successful;
-  }
-
-const recognizeAndTranslateRequest = () => {
-  const [access_token, base64Data, target_language] = [
-    variables.tokens.access,
-    variables.base64Data,
-    elements.textRecognition.find('#tr-languages').val()
-    ];
+    },
+  resendCode: function() {
+    const email = variables.userEmail ?? elements.panels.resetEmail.find('#re-email').val();
   
-  $.ajax({
-    url: urls.recognize,
-    data: JSON.stringify({access_token, base64Data, target_language})
-    })
-    .done((data) => {
-      [variables.texts.recognised, variables.texts.translated] = [data['recognized_text'], data['translated_text']];
+    $.ajax({
+      url: urls.resendCode,
+      data: JSON.stringify({email})
       })
-    .fail((jqXHR) => {
-      console.error(JSON.parse(jqXHR.responseText), jqXHR.status);
-      if (!refreshRequest() && checkNullOrUndefined(localStorage.getItem('access_token'), localStorage.getItem('refresh_token'))) {
-        logout();
-        show(elements.login);
-        }
+      .done((data) => {
+        variables.userEmail = email;
+        show(elements.panels.resetNew);
+        })
+      .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
+    },
+  newPassword: function() {
+    const [email, code, password, repeat] = [
+      variables.userEmail,
+      Number.parseInt(elements.panels.resetNew.find('#rn-code').val()),
+      elements.panels.resetNew.find('#rn-password').val(),
+      elements.panels.resetNew.find('#rn-password-repeat').val()
+      ];
+  
+    if (password === repeat)
+      $.ajax({
+        url: urls.resetPassword,
+        data: JSON.stringify({email, code, password})
+        })
+        .done((data) => {
+          variables.userEmail = null;
+          show(elements.panels.login);
+          })
+        .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
       else
-        recognizeAndTranslateRequest();
-      });
-  }
+        console.error('Passwords do not match'); 
+    },
+  refresh: function() {
+    const [access_token, refresh_token] = [
+      variables.tokens.access,
+      variables.tokens.refresh
+      ];
+  
+    let successful = false;
+  
+    $.ajax({
+      url: urls.refresh,
+      data: JSON.stringify({access_token, refresh_token})
+      })
+      .done((data) => {
+        successful = true;
+        })
+      .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
+  
+    return successful;
+    },
+  recognizeAndTranslate: function() {
+    const [access_token, base64Data, target_language] = [
+      variables.tokens.access,
+      variables.base64Data,
+      elements.panels.textRecognition.find('#tr-languages').val()
+      ];
+    
+    $.ajax({
+      url: urls.recognize,
+      data: JSON.stringify({access_token, base64Data, target_language})
+      })
+      .done((data) => {
+        [variables.texts.recognised, variables.texts.translated] = [data['recognized_text'], data['translated_text']];
+        })
+      .fail((jqXHR) => {
+        console.error(JSON.parse(jqXHR.responseText), jqXHR.status);
+        if (!requests.refresh() && checkNullOrUndefined(localStorage.getItem('access_token'), localStorage.getItem('refresh_token'))) {
+          logout();
+          show(elements.panels.login);
+          }
+        else
+          requests.recognizeAndTranslate();
+        });
+    }
+  });
 /* ----- */
 
 const load = () => {
@@ -252,28 +256,31 @@ const load = () => {
     });
 
   /* Setup request buttons */
-  elements.login.find('#l-sign-in').on('click', loginRequest);
-  elements.signup.find('#s-sign-up').on('click', signupRequest);
-  elements.signupConfirm.find('#sc-continue').on('click', confirmRequest);
-  elements.signupConfirm.find('#sc-resend').on('click', resendCodeRequest);
-  elements.resetEmail.find('#re-send').on('click', resendCodeRequest);
-  elements.resetNew.find('#rn-resend').on('click', resendCodeRequest);
-  elements.resetNew.find('#rn-continue').on('click', newPasswordRequest);
-  elements.textRecognition.find('#tr-send').on('click', recognizeAndTranslateRequest);
+  elements.panels.login.find('#l-sign-in').on('click', requests.login);
+  elements.panels.signup.find('#s-sign-up').on('click', requests.signup);
+  elements.panels.signupConfirm.find('#sc-continue').on('click', requests.confirm);
+  elements.panels.signupConfirm.find('#sc-resend').on('click', requests.resendCode);
+  elements.panels.resetEmail.find('#re-send').on('click', requests.resendCode);
+  elements.panels.resetNew.find('#rn-resend').on('click', requests.resendCode);
+  elements.panels.resetNew.find('#rn-continue').on('click', requests.newPassword);
+  elements.panels.textRecognition.find('#tr-send').on('click', requests.recognizeAndTranslate);
 
   /* Setup copy buttons */
-  elements.textRecognition.find('#tr-copy').on('click', readFromClipboard);
-  elements.textRecognition.find('#tr-recognised-copy').on('click', () => writeToClipboard(variables.texts.recognised));
-  elements.textRecognition.find('#tr-translated-copy').on('click', () => writeToClipboard(variables.texts.translated))
+  elements.panels.textRecognition.find('#tr-copy').on('click', readFromClipboard);
+  elements.panels.textRecognition.find('#tr-recognised-copy').on('click', () => writeToClipboard(variables.texts.recognised));
+  elements.panels.textRecognition.find('#tr-translated-copy').on('click', () => writeToClipboard(variables.texts.translated))
 
   /* Setup access buttons */
-  elements.returnButtons.on('click', () => show(elements.login));
-  elements.textRecognition.find('#tr-logout').on('click', () => logout);
-  elements.login.find('#l-sign-up').on('click', () => show(elements.signup));
-  elements.login.find('#l-reset-password').on('click', () => show(elements.resetEmail));
+  elements.returnButtons.on('click', () => show(elements.panels.login));
+  elements.panels.textRecognition.find('#tr-logout').on('click', () => {
+    logout();
+    show(elements.panels.login);
+    });
+  elements.panels.login.find('#l-sign-up').on('click', () => show(elements.panels.signup));
+  elements.panels.login.find('#l-reset-password').on('click', () => show(elements.panels.resetEmail));
 
   /* Populate select with languages */
-  let tmp = elements.textRecognition.find('#tr-languages');
+  let tmp = elements.panels.textRecognition.find('#tr-languages');
   for (let [code, name] of Object.entries(variables.langCodes))
     tmp.append($('<option>')
       .attr('value', code)
@@ -292,11 +299,11 @@ const load = () => {
   /* Show interface */
   if (checkNullOrUndefined(localStorage.getItem('access_token'), localStorage.getItem('refresh_token'))) {
     logout();
-    show(elements.login);
+    show(elements.panels.login);
     }
   else {
     [variables.tokens.access, variables.tokens.refresh] = [localStorage.getItem('access_token'), localStorage.getItem('refresh_token')];
-    show(elements.textRecognition);
+    show(elements.panels.textRecognition);
     }
   }
 /* Load page */

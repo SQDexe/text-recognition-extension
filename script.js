@@ -4,11 +4,14 @@ const elements = Object.freeze({
   /* Backstage elemetns */
   settings: $('#settings-panel'),
   darkModeCheckbutton: $('#checkbox-dark-mode'),
-  darkModers: $('*:not(img, video, iframe, head, head *)'),
+  darkModers: $('*:not(img, video, iframe, .sign, head, head *)'),
   bodyPanels: $('.body-frame'),
+  dialogsFrames: $('.dialog-frame'),
   returnButtons: $('.button-return'),
+  dialogReturnButtons: $('.button-dialog-return'),
   textInputs: $('.input-text:not(#settings-panel .input-text)'),
   checkInputs: $('.input-checkbox:not(#settings-panel .input-checkbox)'),
+  blur: $('#blur-panel'),
   /* Main panels */
   panels: {
     login: $('#login'),
@@ -17,6 +20,12 @@ const elements = Object.freeze({
     resetEmail: $('#reset-email'),
     resetNew: $('#reset-new'),
     textRecognition: $('#text-recognition')
+    },
+  /* Dialogs */
+  dialogs: {
+    success: $('#notify-succes'),
+    warning: $('#notify-warning'),
+    error: $('#notify-error')
     }
   });
 
@@ -34,7 +43,8 @@ const urls =  Object.freeze({
 
 /* Variables for project managment */
 const variables = Object.seal({
-  langCodes: {"aa":"Afar","ab":"Abkhazian","ae":"Avestan","af":"Afrikaans","ak":"Akan","am":"Amharic","an":"Aragonese","ar":"Arabic","as":"Assamese","av":"Avaric","ay":"Aymara","az":"Azerbaijani","ba":"Bashkir","be":"Belarusian","bg":"Bulgarian","bh":"Bihari languages","bi":"Bislama","bm":"Bambara","bn":"Bengali","bo":"Tibetan","br":"Breton","bs":"Bosnian","ca":"Catalan","ce":"Chechen","ch":"Chamorro","co":"Corsican","cr":"Cree","cs":"Czech","cu":"Church Slavic","cv":"Chuvash","cy":"Welsh","da":"Danish","de":"German","dv":"Maldivian","dz":"Dzongkha","ee":"Ewe","el":"Greek","en":"English","eo":"Esperanto","es":"Spanish","et":"Estonian","eu":"Basque","fa":"Persian","ff":"Fulah","fi":"Finnish","fj":"Fijian","fo":"Faroese","fr":"French","fy":"Western Frisian","ga":"Irish","gd":"Gaelic","gl":"Galician","gn":"Guarani","gu":"Gujarati","gv":"Manx","ha":"Hausa","he":"Hebrew","hi":"Hindi","ho":"Hiri Motu","hr":"Croatian","ht":"Haitian","hu":"Hungarian","hy":"Armenian","hz":"Herero","ia":"Interlingua","id":"Indonesian","ie":"Interlingue","ig":"Igbo","ii":"Sichuan Yi","ik":"Inupiaq","io":"Ido","is":"Icelandic","it":"Italian","iu":"Inuktitut","ja":"Japanese","jv":"Javanese","ka":"Georgian","kg":"Kongo","ki":"Kikuyu","kj":"Kuanyama","kk":"Kazakh","kl":"Kalaallisut","km":"Central Khmer","kn":"Kannada","ko":"Korean","kr":"Kanuri","ks":"Kashmiri","ku":"Kurdish","kv":"Komi","kw":"Cornish","ky":"Kirghiz","la":"Latin","lb":"Luxembourgish","lg":"Ganda","li":"Limburgan","ln":"Lingala","lo":"Lao","lt":"Lithuanian","lu":"Luba-Katanga","lv":"Latvian","mg":"Malagasy","mh":"Marshallese","mi":"Maori","mk":"Macedonian","ml":"Malayalam","mn":"Mongolian","mr":"Marathi","ms":"Malay","mt":"Maltese","my":"Burmese","na":"Nauru","nb":"Norwegian","nd":"North Ndebele","ne":"Nepali","ng":"Ndonga","nl":"Dutch","nn":"Norwegian","no":"Norwegian","nr":"South Ndebele","nv":"Navajo","ny":"Chichewa","oc":"Occitan","oj":"Ojibwa","om":"Oromo","or":"Oriya","os":"Ossetic","pa":"Panjabi","pi":"Pali","pl":"Polish","ps":"Pushto","pt":"Portuguese","qu":"Quechua","rm":"Romansh","rn":"Rundi","ro":"Romanian","ru":"Russian","rw":"Kinyarwanda","sa":"Sanskrit","sc":"Sardinian","sd":"Sindhi","se":"Northern Sami","sg":"Sango","si":"Sinhala","sk":"Slovak","sl":"Slovenian","sm":"Samoan","sn":"Shona","so":"Somali","sq":"Albanian","sr":"Serbian","ss":"Swati","st":"Sotho, Southern","su":"Sundanese","sv":"Swedish","sw":"Swahili","ta":"Tamil","te":"Telugu","tg":"Tajik","th":"Thai","ti":"Tigrinya","tk":"Turkmen","tl":"Tagalog","tn":"Tswana","to":"Tonga","tr":"Turkish","ts":"Tsonga","tt":"Tatar","tw":"Twi","ty":"Tahitian","ug":"Uighur","uk":"Ukrainian","ur":"Urdu","uz":"Uzbek","ve":"Venda","vi":"Vietnamese","vo":"Volapük","wa":"Walloon","wo":"Wolof","xh":"Xhosa","yi":"Yiddish","yo":"Yoruba","za":"Zhuang","zh":"Chinese","zu":"Zulu"},
+  storageKey: 'text-recognition',
+  langCodes: {'aa':'Afar','ab':'Abkhazian','ae':'Avestan','af':'Afrikaans','ak':'Akan','am':'Amharic','an':'Aragonese','ar':'Arabic','as':'Assamese','av':'Avaric','ay':'Aymara','az':'Azerbaijani','ba':'Bashkir','be':'Belarusian','bg':'Bulgarian','bh':'Bihari languages','bi':'Bislama','bm':'Bambara','bn':'Bengali','bo':'Tibetan','br':'Breton','bs':'Bosnian','ca':'Catalan','ce':'Chechen','ch':'Chamorro','co':'Corsican','cr':'Cree','cs':'Czech','cu':'Church Slavic','cv':'Chuvash','cy':'Welsh','da':'Danish','de':'German','dv':'Maldivian','dz':'Dzongkha','ee':'Ewe','el':'Greek','en':'English','eo':'Esperanto','es':'Spanish','et':'Estonian','eu':'Basque','fa':'Persian','ff':'Fulah','fi':'Finnish','fj':'Fijian','fo':'Faroese','fr':'French','fy':'Western Frisian','ga':'Irish','gd':'Gaelic','gl':'Galician','gn':'Guarani','gu':'Gujarati','gv':'Manx','ha':'Hausa','he':'Hebrew','hi':'Hindi','ho':'Hiri Motu','hr':'Croatian','ht':'Haitian','hu':'Hungarian','hy':'Armenian','hz':'Herero','ia':'Interlingua','id':'Indonesian','ie':'Interlingue','ig':'Igbo','ii':'Sichuan Yi','ik':'Inupiaq','io':'Ido','is':'Icelandic','it':'Italian','iu':'Inuktitut','ja':'Japanese','jv':'Javanese','ka':'Georgian','kg':'Kongo','ki':'Kikuyu','kj':'Kuanyama','kk':'Kazakh','kl':'Kalaallisut','km':'Central Khmer','kn':'Kannada','ko':'Korean','kr':'Kanuri','ks':'Kashmiri','ku':'Kurdish','kv':'Komi','kw':'Cornish','ky':'Kirghiz','la':'Latin','lb':'Luxembourgish','lg':'Ganda','li':'Limburgan','ln':'Lingala','lo':'Lao','lt':'Lithuanian','lu':'Luba-Katanga','lv':'Latvian','mg':'Malagasy','mh':'Marshallese','mi':'Maori','mk':'Macedonian','ml':'Malayalam','mn':'Mongolian','mr':'Marathi','ms':'Malay','mt':'Maltese','my':'Burmese','na':'Nauru','nb':'Norwegian','nd':'North Ndebele','ne':'Nepali','ng':'Ndonga','nl':'Dutch','nn':'Norwegian','no':'Norwegian','nr':'South Ndebele','nv':'Navajo','ny':'Chichewa','oc':'Occitan','oj':'Ojibwa','om':'Oromo','or':'Oriya','os':'Ossetic','pa':'Panjabi','pi':'Pali','pl':'Polish','ps':'Pushto','pt':'Portuguese','qu':'Quechua','rm':'Romansh','rn':'Rundi','ro':'Romanian','ru':'Russian','rw':'Kinyarwanda','sa':'Sanskrit','sc':'Sardinian','sd':'Sindhi','se':'Northern Sami','sg':'Sango','si':'Sinhala','sk':'Slovak','sl':'Slovenian','sm':'Samoan','sn':'Shona','so':'Somali','sq':'Albanian','sr':'Serbian','ss':'Swati','st':'Sotho, Southern','su':'Sundanese','sv':'Swedish','sw':'Swahili','ta':'Tamil','te':'Telugu','tg':'Tajik','th':'Thai','ti':'Tigrinya','tk':'Turkmen','tl':'Tagalog','tn':'Tswana','to':'Tonga','tr':'Turkish','ts':'Tsonga','tt':'Tatar','tw':'Twi','ty':'Tahitian','ug':'Uighur','uk':'Ukrainian','ur':'Urdu','uz':'Uzbek','ve':'Venda','vi':'Vietnamese','vo':'Volapük','wa':'Walloon','wo':'Wolof','xh':'Xhosa','yi':'Yiddish','yo':'Yoruba','za':'Zhuang','zh':'Chinese','zu':'Zulu'},
   template: {
     methods: {
       post: 'POST',
@@ -45,12 +55,15 @@ const variables = Object.seal({
       },
     dataType: 'json' 
     },
-  userEmail: null,
+  data: {
+    email: null,
+    persist: false,
+    base64: null
+    },
   tokens: { 
     access: null,
     refresh: null
     },
-  base64Data: null,
   texts: {
     recognised: '',
     translated: ''
@@ -58,19 +71,71 @@ const variables = Object.seal({
   });
 
 /* Utlility functions */
+const not = bool => !bool;
+
 const checkNullOrUndefined = (...args) => args.some(param => Object.is(param, null) || Object.is(param, undefined));
 
-function show(element = null) {
-  elements.bodyPanels.addClass('hidden');
-  elements.textInputs.val('');
-  elements.checkInputs.prop('checked', false);
-  element.removeClass('hidden');
+const online = () => navigator.onLine;
+
+function hide(elementQuery) {
+  elementQuery.addClass('hidden');
   }
 
-function logout() {
-  localStorage.clear();
-  [variables.userEmail, variables.tokens.access, variables.tokens.refresh, variables.base64Data] = Array.from({length: 4}).map(e => null);
-  [variables.texts.recognised, variables.texts.translated] = Array.from({length: 2}).map(e => '');
+function unhide(elementQuery) {
+  elementQuery.removeClass('hidden');
+  }
+/* ----- */
+
+
+/* Storage functions */
+function packStorage() {
+  localStorage.setItem(variables.storageKey, JSON.stringify({
+    'access_token': variables.tokens.access,
+    'refresh_token': variables.tokens.refresh,
+    'base64': variables.data.base64,
+    'recognised_text': variables.texts.recognised,
+    'translated_text': variables.texts.translated
+    }));
+  }
+
+function unpackStorage() {
+  const storage = JSON.parse(localStorage.getItem(variables.storageKey));
+  variables.tokens.access = storage['access_token'] ?? null;
+  variables.tokens.refresh = storage['refresh_token'] ?? null;
+  variables.data.base64 = storage['base64'] ?? null;
+  variables.texts.recognised = storage['recognised_text'] ?? '';
+  variables.texts.translated = storage['translated_text'] ?? '';
+  }
+
+function getStorage() {
+  return localStorage.getItem(variables.storageKey);
+  }
+/* ----- */
+
+/* Element content and visibility operating functions */
+function show(element) {
+  hide(elements.bodyPanels);
+  elements.textInputs.val('');
+  elements.checkInputs.prop('checked', false);
+  unhide(element);
+  }
+
+function showDialog(element, texts = {}) {
+  unhide(elements.blur);
+  element.find('.success-text').text(texts.succes ?? '');
+  element.find('.error-text').text(texts.error ?? '');
+  unhide(element);
+  }
+
+function hideDialogs() {
+  hide(elements.dialogsFrames);
+  hide(elements.blur);
+  }
+
+function setErrorMessage(...args) {
+  const list = $('<ul>');
+  args.forEach(e => list.append($('<li>').text(e)));
+  elements.dialogs.error.find('.dialog-description').html(list);
   }
 
 function setColourScheme() {
@@ -79,30 +144,47 @@ function setColourScheme() {
     elements.darkModers.removeClass('dark-mode');
   }
 
+function setPreview() {
+  elements.panels.textRecognition.find('#tr-preview').attr('src', variables.data.base64);
+  }
+/* ----- */
+
+/* Clipboard functions */
 async function readFromClipboard() {
   try {
     for (const item of await navigator.clipboard.read()) {
-      if (!item.types.includes('image/png'))
+      if (not(item.types.includes('image/png')))
         throw new Error('Clipboard does not contain PNG image data.');
 
       const blob = await item.getType('image/png');
 
-      elements.panels.textRecognition.find('#tr-preview').attr('src', URL.createObjectURL(blob));
-
       const reader = new FileReader();
       reader.addEventListener('loadend', () => {
-        variables.base64Data = reader.result.split(',')[1];
+        variables.data.base64 = reader.result;
+        setPreview();
         })
       reader.readAsDataURL(blob);
       }
     }
   catch (error) {
     console.error(error);
+
+    setErrorMessage('Can not copy from clipboard');
+    showDialog(elements.dialogs.error);
     }
   }
 
 function writeToClipboard(text) {
   navigator.clipboard.writeText(text);
+  }
+/* ----- */
+
+/* Clearing functions */
+function logout() {
+  localStorage.clear();
+  [variables.data.email, variables.tokens.access, variables.tokens.refresh, variables.data.base64] = Array.from({length: 4}).map(e => null);
+  [variables.texts.recognised, variables.texts.translated] = Array.from({length: 2}).map(e => '');
+  variables.data.persist = false;
   }
 /* ----- */
 
@@ -114,21 +196,42 @@ const requests = Object.freeze({
       elements.panels.login.find('#l-password').val(),
       elements.panels.login.find('#l-remember').prop('checked')
       ];
-  
+
+    if (not(online())) {
+      showDialog(elements.dialogs.warning);
+      return;
+      }
+      
+
     $.ajax({
       url: urls.login,
       data: JSON.stringify({login, password})
       })
-      .done((data) => {
+      .done(data => {
+
         [variables.tokens.access, variables.tokens.refresh] = [data['access_token'], data['refresh_token']];
+
         if (persist) {
-          localStorage.setItem('access_token', variables.tokens.access);
-          localStorage.setItem('refresh_token', variables.tokens.refresh);
+          variables.data.persist = true;
+          packStorage();
           }
         
         show(elements.panels.textRecognition);
+
         })
-      .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
+      .fail(jqXHR => {
+
+        console.error(jqXHR);
+        const [response, status] = [JSON.parse(jqXHR.responseText), jqXHR.status];
+
+        if (status == 404) 
+          setErrorMessage(...Object.values(response.errors));
+        else
+          setErrorMessage('Unkown error');
+
+        showDialog(elements.dialogs.error);
+
+        });
     },
   signup: function() {
     const [email, login, password, repeat] = [
@@ -137,69 +240,152 @@ const requests = Object.freeze({
       elements.panels.signup.find('#s-password').val(),
       elements.panels.signup.find('#s-password-repeat').val()
       ];
+
+    if (not(online())) {
+      showDialog(elements.dialogs.warning);
+      return;
+      }
     
-    if (password === repeat)
-      $.ajax({
-        url: urls.signup,
-        data: JSON.stringify({email, login, password})
+    if (not(password === repeat)){
+      setErrorMessage('Passwords do not match');
+      showDialog(elements.dialogs.error);
+      return;
+      }
+
+    $.ajax({
+      url: urls.signup,
+      data: JSON.stringify({email, login, password})
+      })
+      .done(data => {
+
+        variables.data.email = email;
+        show(elements.panels.signupConfirm);
+
         })
-        .done((data) => {
-          variables.userEmail = email;
-          show(elements.panels.signupConfirm);
-          })
-        .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
-      else
-        console.error('Passwords do not match');
+      .fail(jqXHR => {
+
+        console.error(jqXHR);
+        const [response, status] = [JSON.parse(jqXHR.responseText), jqXHR.status];
+
+        if (status == 404) 
+          setErrorMessage(...Object.values(response.errors));
+        else
+          setErrorMessage('Unkown error');
+
+        showDialog(elements.dialogs.error);
+
+        });
     },
   confirm: function() {
     const [email, verification_code] = [
-      variables.userEmail,
+      variables.data.email,
       Number.parseInt(elements.panels.signupConfirm.find('#sc-code').val())
       ];
+
+    if (not(online())) {
+      showDialog(elements.dialogs.warning);
+      return;
+      }
   
     $.ajax({
       url: urls.confirm,
       data: JSON.stringify({email, verification_code})
       })
-      .done((data) => {
-        variables.userEmail = null;
+      .done(data => {
+
+        variables.data.email = null;
         show(elements.panels.login);
+
         })
-      .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
+      .fail(jqXHR => {
+
+        console.error(jqXHR);
+        const [response, status] = [JSON.parse(jqXHR.responseText), jqXHR.status];
+
+        if (status == 404) 
+          setErrorMessage(...Object.values(response.errors));
+        else
+          setErrorMessage('Unkown error');
+
+        showDialog(elements.dialogs.error);
+
+        });
     },
   resendCode: function() {
-    const email = variables.userEmail ?? elements.panels.resetEmail.find('#re-email').val();
+    const email = variables.data.email ?? elements.panels.resetEmail.find('#re-email').val();
+
+    if (not(online())) {
+      showDialog(elements.dialogs.warning);
+      return;
+      }
   
     $.ajax({
       url: urls.resendCode,
       data: JSON.stringify({email})
       })
-      .done((data) => {
-        variables.userEmail = email;
+      .done(data => {
+
+        variables.data.email = email;
         show(elements.panels.resetNew);
+
         })
-      .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
+      .fail(jqXHR => {
+
+        console.error(jqXHR);
+        const [response, status] = [JSON.parse(jqXHR.responseText), jqXHR.status];
+
+        if (status == 404) 
+          setErrorMessage(...Object.values(response.errors));
+        else
+          setErrorMessage('Unkown error');
+
+        showDialog(elements.dialogs.error);
+
+        });
     },
   newPassword: function() {
     const [email, code, password, repeat] = [
-      variables.userEmail,
+      variables.data.email,
       Number.parseInt(elements.panels.resetNew.find('#rn-code').val()),
       elements.panels.resetNew.find('#rn-password').val(),
       elements.panels.resetNew.find('#rn-password-repeat').val()
       ];
+
+    if (not(online())) {
+      showDialog(elements.dialogs.warning);
+      return;
+      }
   
-    if (password === repeat)
-      $.ajax({
-        url: urls.resetPassword,
-        data: JSON.stringify({email, code, password})
+    if (not(password === repeat)) {
+      setErrorMessage('Passwords do not match');
+      showDialog(elements.dialogs.error);
+      return;
+      }
+
+    $.ajax({
+      url: urls.resetPassword,
+      data: JSON.stringify({email, code, password})
+      })
+      .done(data => {
+
+        variables.data.email = null;
+        showDialog(elements.dialogs.success);
+        show(elements.panels.login);
+
         })
-        .done((data) => {
-          variables.userEmail = null;
-          show(elements.panels.login);
-          })
-        .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
-      else
-        console.error('Passwords do not match'); 
+      .fail(jqXHR => {
+
+        console.error(jqXHR);
+        const [response, status] = [JSON.parse(jqXHR.responseText), jqXHR.status];
+
+        if (status == 404) 
+          setErrorMessage(...Object.values(response.errors));
+        else
+          setErrorMessage('Unkown error');
+
+        showDialog(elements.dialogs.error);
+
+        });
     },
   refresh: function() {
     const [access_token, refresh_token] = [
@@ -213,35 +399,73 @@ const requests = Object.freeze({
       url: urls.refresh,
       data: JSON.stringify({access_token, refresh_token})
       })
-      .done((data) => {
+      .done(data => {
+
+        [variables.tokens.access, variables.tokens.refresh] = [data['access_token'], data['refresh_token']];
+
+        if (variables.data.persist)
+          packStorage();
+
         successful = true;
+
         })
-      .fail((jqXHR) => console.error(JSON.parse(jqXHR.responseText), jqXHR.status));
+      .fail(jqXHR => {
+
+        console.error(jqXHR);
+
+        });
   
     return successful;
     },
   recognizeAndTranslate: function() {
     const [access_token, base64Data, target_language] = [
       variables.tokens.access,
-      variables.base64Data,
+      variables.data.base64.split(',')[1],
       elements.panels.textRecognition.find('#tr-languages').val()
       ];
+
+    if (not(online())) {
+      showDialog(elements.dialogs.warning);
+      return;
+      }
     
     $.ajax({
       url: urls.recognize,
       data: JSON.stringify({access_token, base64Data, target_language})
       })
-      .done((data) => {
+      .done(data => {
+
         [variables.texts.recognised, variables.texts.translated] = [data['recognized_text'], data['translated_text']];
+
+        if (variables.data.persist)
+          packStorage();
+
+        showDialog(elements.dialogs.success);
+
         })
-      .fail((jqXHR) => {
-        console.error(JSON.parse(jqXHR.responseText), jqXHR.status);
-        if (!requests.refresh() && checkNullOrUndefined(localStorage.getItem('access_token'), localStorage.getItem('refresh_token'))) {
+      .fail(jqXHR => {
+        /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
+        console.error(jqXHR);
+        const [response, status] = [JSON.parse(jqXHR.responseText), jqXHR.status];
+
+        if (status == 404) 
+          setErrorMessage(...Object.values(response.errors));
+        else
+          setErrorMessage('Unkown error');
+
+        showDialog(elements.dialogs.error);
+
+        if (not(requests.refresh()) && checkNullOrUndefined(getStorage())) {
           logout();
+          setErrorMessage('Timeout, please login again');
+          showDialog(elements.dialogs.error);
           show(elements.panels.login);
+          return;
           }
         else
           requests.recognizeAndTranslate();
+        /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
+
         });
     }
   });
@@ -268,10 +492,11 @@ const load = () => {
   /* Setup copy buttons */
   elements.panels.textRecognition.find('#tr-copy').on('click', readFromClipboard);
   elements.panels.textRecognition.find('#tr-recognised-copy').on('click', () => writeToClipboard(variables.texts.recognised));
-  elements.panels.textRecognition.find('#tr-translated-copy').on('click', () => writeToClipboard(variables.texts.translated))
+  elements.panels.textRecognition.find('#tr-translated-copy').on('click', () => writeToClipboard(variables.texts.translated));
 
   /* Setup access buttons */
   elements.returnButtons.on('click', () => show(elements.panels.login));
+  elements.dialogReturnButtons.on('click', hideDialogs);
   elements.panels.textRecognition.find('#tr-logout').on('click', () => {
     logout();
     show(elements.panels.login);
@@ -284,8 +509,7 @@ const load = () => {
   for (let [code, name] of Object.entries(variables.langCodes))
     tmp.append($('<option>')
       .attr('value', code)
-      .text(name)
-      );
+      .text(name));
 
   /* Set initial colour scheme */
   if (window.matchMedia('(prefers-color-scheme: dark)').matches ?? false) {
@@ -297,12 +521,15 @@ const load = () => {
   elements.darkModeCheckbutton.on('change', setColourScheme);
 
   /* Show interface */
-  if (checkNullOrUndefined(localStorage.getItem('access_token'), localStorage.getItem('refresh_token'))) {
+  if (checkNullOrUndefined(getStorage())) {
     logout();
     show(elements.panels.login);
     }
   else {
-    [variables.tokens.access, variables.tokens.refresh] = [localStorage.getItem('access_token'), localStorage.getItem('refresh_token')];
+    variables.data.persist = true;
+    unpackStorage();
+    if (not(checkNullOrUndefined(variables.data.base64)))
+      setPreview();
     show(elements.panels.textRecognition);
     }
   }

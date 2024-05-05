@@ -10,7 +10,7 @@
 		<script src="script.js" defer></script>
 	</head>
 
-  <body>
+  <body id="body-text-recognition">
 
     <div id="settings-panel" class="top-frame">
       <div class="container container-right">
@@ -99,9 +99,33 @@
       </div>
     </div>
 
-    <!-- <div id="notify-succes"></div>
-    <div id="notify-error"></div>
-    <div id="notify-warning"></div> -->
+    <div id="blur-panel" class="hidden"></div>
+
+    <div id="notify-succes" class="dialog-frame hidden">
+      <div class="container">
+        <div class="dialog-text">SUCCESS</div>
+        <div class="sign success-mark">&check;</div>
+        <button class="button-dialog-return">OK</button>
+      </div>
+    </div>
+    
+    <div id="notify-error" class="dialog-frame hidden">
+      <div class="container">
+        <div class="dialog-text">ERROR</div>
+        <div class="sign error-mark">!</div>
+        <div class="dialog-description"></div>
+        <button class="button-dialog-return">OK</button>
+      </div>
+    </div>
+
+    <div id="notify-warning" class="dialog-frame hidden">
+      <div class="container">
+        <div class="dialog-text">WARNING</div>
+        <div class="sign warning-mark">?</div>
+        <div class="dialog-description">Propable network error</div>
+        <button class="button-dialog-return">OK</button>
+      </div>
+    </div>
 
   </body>
 

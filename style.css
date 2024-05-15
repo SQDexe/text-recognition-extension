@@ -1,7 +1,8 @@
 /* Site managment */
 .dark-mode {
   /* *:not(img, video, iframe, head, head *) */
-  filter: invert(95%) hue-rotate(180deg);
+  -webkit-filter: invert(95%) hue-rotate(180deg);
+          filter: invert(95%) hue-rotate(180deg);
   }
 .hidden {
   display: none;
@@ -9,7 +10,7 @@
 .blank {
   display: block;
   width: 150px;
-  height: 15px;
+  height: 10px;
   }
 .centred-box {
   width: 225px;
@@ -26,16 +27,20 @@
   font-family: "Trebuchet MS", Helvetica, sans-serif;
   }
 :is(button, label, .sign) {
-  user-select: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
   }
 #blur-panel {
   width: 100%;
   height: 100%;
   position: fixed;
-  top: 50%;
-  left: 50%;
-  translate:-50% -50%;
-  backdrop-filter: blur(5px);
+  top: 0;
+  left: 0;
+  background-color: #00000080;
+  -webkit-backdrop-filter: blur(5px);
+          backdrop-filter: blur(5px);
   }
 
 /* Body wrapers */
@@ -62,15 +67,23 @@
 .container {
   width: 100%;
   height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  align-items: center;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   }
 .container-right {
   width: 100%;
   height: 100%;
-  justify-content: flex-end;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
   }
 
 /* Basic element's settings */
@@ -83,7 +96,8 @@
   border-style: none;
   }
 .input-checkbox {
-  filter: grayscale(100%);
+  -webkit-filter: grayscale(100%);
+          filter: grayscale(100%);
   }
 .image-preview {
   width: 150px;
@@ -129,7 +143,7 @@
   background-color: #ff8000;
   }
 .button-dialog-return {
-  width: 60px;
+  width: 55px;
   margin: 0 20px;
   text-align: center;
   border-radius: 10px;
@@ -139,7 +153,8 @@
   font-size: medium;
   text-transform: uppercase;
   &:hover {
-    filter: brightness(110%);
+    -webkit-filter: brightness(110%);
+            filter: brightness(110%);
     }
   }
 
@@ -169,35 +184,34 @@
   }
 .button-copy {
   width: 140px;
-  height: 20px;
+  height: 15px;
   margin: 5px;
   border-radius: 10px;
   font-size: x-small;
   }
 :is(.button-return, .button-sign, .button-logout):hover {
   background: #585858;
-  background: -moz-linear-gradient(45deg, #585858 0%, #929292 100%);
-  background: -webkit-linear-gradient(45deg, #585858 0%, #929292 100%);
+  background: -o-linear-gradient(45deg, #585858 0%, #929292 100%);
   background: linear-gradient(45deg, #585858 0%, #929292 100%);
   }
 .button-action:hover {
   background: #7CE2EC;
-  background: -moz-linear-gradient(left, #7CE2EC 0%, #3690BB 50%, #57A3E1 100%);
-  background: -webkit-linear-gradient(left, #7CE2EC 0%, #3690BB 50%, #57A3E1 100%);
+  background: -webkit-gradient(linear, left top, right top, from(#7CE2EC), color-stop(50%, #3690BB), to(#57A3E1));
+  background: -o-linear-gradient(left, #7CE2EC 0%, #3690BB 50%, #57A3E1 100%);
   background: linear-gradient(to right, #7CE2EC 0%, #3690BB 50%, #57A3E1 100%);
   }
 .buttton-resend:hover {
   background: #EC4C35;
-  background: -moz-linear-gradient(left, #EC4C35 0%, #9D0A0A 50%, #D76257 100%);
-  background: -webkit-linear-gradient(left, #EC4C35 0%, #9D0A0A 50%, #D76257 100%);
+  background: -webkit-gradient(linear, left top, right top, from(#EC4C35), color-stop(50%, #9D0A0A), to(#D76257));
+  background: -o-linear-gradient(left, #EC4C35 0%, #9D0A0A 50%, #D76257 100%);
   background: linear-gradient(to right, #EC4C35 0%, #9D0A0A 50%, #D76257 100%);
   }
 .button-copy:hover {
   background: #DDDD1D;
-  background: -moz-linear-gradient(45deg, #DDDD1D 0%, #98892D 100%);
-  background: -webkit-linear-gradient(45deg, #DDDD1D 0%, #98892D 100%);
+  background: -o-linear-gradient(45deg, #DDDD1D 0%, #98892D 100%);
   background: linear-gradient(45deg, #DDDD1D 0%, #98892D 100%);
   }
 :is(.button-return, .button-sign, .button-logout, .button-action, .buttton-resend, .button-copy):active {
-  filter: brightness(110%);
+  -webkit-filter: brightness(110%);
+          filter: brightness(110%);
   }

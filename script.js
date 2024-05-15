@@ -4,7 +4,7 @@ const elements = Object.freeze({
   /* Backstage elemetns */
   settings: $('#settings-panel'),
   darkModeCheckbutton: $('#checkbox-dark-mode'),
-  darkModers: $('*:not(img, video, iframe, .sign, head, head *)'),
+  darkModers: $('*:not(img, video, iframe, .sign, head, head *, #blur-panel)'),
   bodyPanels: $('.body-frame'),
   dialogsFrames: $('.dialog-frame'),
   returnButtons: $('.button-return'),
@@ -444,28 +444,24 @@ const requests = Object.freeze({
 
         })
       .fail(jqXHR => {
-        /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
         console.error(jqXHR);
         const [response, status] = [JSON.parse(jqXHR.responseText), jqXHR.status];
 
-        if (status == 404) 
+        if (status == 404) {
           setErrorMessage(...Object.values(response.errors));
+          }
         else
           setErrorMessage('Unkown error');
 
-        showDialog(elements.dialogs.error);
-
-        if (not(requests.refresh()) && checkNullOrUndefined(getStorage())) {
+        if (not(requests.refresh()) || checkNullOrUndefined(data.tokens.access, data.tokens.refresh)) {
           logout();
           setErrorMessage('Timeout, please login again');
-          showDialog(elements.dialogs.error);
           show(elements.panels.login);
-          return;
           }
         else
-          requests.recognizeAndTranslate();
-        /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
+          setErrorMessage('Please, retry');
 
+        showDialog(elements.dialogs.error);
         });
     }
   });

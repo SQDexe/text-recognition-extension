@@ -428,6 +428,12 @@ const requests = Object.freeze({
       showDialog(elements.dialogs.warning);
       return;
       }
+
+    if (checkNullOrUndefined(variables.data.base64)) {
+      setErrorMessage('Empty image data');
+      showDialog(elements.dialogs.error);
+      return;
+      }
     
     $.ajax({
       url: urls.recognize,
